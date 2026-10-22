@@ -1,0 +1,77 @@
+1791830829391 COM5 [CMD] Clock set to 1791830829 (Unix seconds).
+1791830829396 COM5 CSV,173348,6,TIME,0,0,0,0,,,,,,,,,,,,,,,,epoch=1791830829
+1791830836359 COM5 [HB RX] V5 seq=73 rssi=-45.0 snr=6.5 batt=unknown traffic=0 queue=0
+1791830836365 COM5 CSV,180314,6,RX,5,73,0,1,5,-45.0,6.50,,0,0,0,,,,29,,,,,heartbeat
+1791830840063 COM5 [HB RX] V1 seq=4 rssi=-36.0 snr=6.2 batt=unknown traffic=0 queue=0
+1791830840069 COM5 CSV,184018,6,RX,1,4,0,1,1,-36.0,6.25,,0,0,0,,,,29,,,,,heartbeat
+1791830847663 COM5 [HB RX] V3 seq=64 rssi=-38.0 snr=6.8 batt=unknown traffic=0 queue=0
+1791830847669 COM5 CSV,191619,6,RX,3,64,0,1,3,-38.0,6.75,,0,0,1,,,,29,,,,,heartbeat
+1791830851688 COM5 [HB RX] V2 seq=112 rssi=-33.0 snr=6.2 batt=unknown traffic=0 queue=0
+1791830851693 COM5 CSV,195642,6,RX,2,112,0,1,2,-33.0,6.25,,0,0,0,,,,29,,,,,heartbeat
+1791830853938 COM5 [HB RX] V4 seq=113 rssi=-40.0 snr=6.5 batt=unknown traffic=0 queue=0
+1791830853944 COM5 CSV,197893,6,RX,4,113,0,1,4,-40.0,6.50,,0,0,0,,,,29,,,,,heartbeat
+1791830856926 COM5 [HB TX] V6 seq=7 batt=unknown traffic=0 queue=0 row=[1,1,1,1,1] relay=V2 (29 bytes)
+1791830856931 COM5 CSV,200879,6,TX,6,7,0,1,255,,,,,,,,,0,29,,,,,heartbeat
+1791830867700 COM5 [HB RX] V5 seq=74 rssi=-46.0 snr=7.5 batt=unknown traffic=0 queue=0
+1791830867705 COM5 CSV,211654,6,RX,5,74,0,1,5,-46.0,7.50,,0,0,1,,,,29,,,,,heartbeat
+1791830872435 COM5 [HB RX] V1 seq=5 rssi=-36.0 snr=5.0 batt=unknown traffic=1 queue=0
+1791830872440 COM5 CSV,216389,6,RX,1,5,0,1,1,-36.0,5.00,,1,0,0,,,,29,,,,,heartbeat
+1791830878002 COM5 [HB RX] V3 seq=65 rssi=-40.0 snr=5.8 batt=unknown traffic=0 queue=0
+1791830878007 COM5 CSV,221956,6,RX,3,65,0,1,3,-40.0,5.75,,0,0,1,,,,29,,,,,heartbeat
+1791830880149 COM5 [HB RX] V2 seq=113 rssi=-33.0 snr=6.8 batt=unknown traffic=0 queue=0
+1791830880156 COM5 CSV,224104,6,RX,2,113,0,1,2,-33.0,6.75,,0,0,1,,,,29,,,,,heartbeat
+1791830885081 COM5 [HB RX] V4 seq=114 rssi=-39.0 snr=7.0 batt=unknown traffic=0 queue=0
+1791830885088 COM5 CSV,229036,6,RX,4,114,0,1,4,-39.0,7.00,,0,0,0,,,,29,,,,,heartbeat
+1791830887715 COM5 [HB TX] V6 seq=8 batt=unknown traffic=0 queue=0 row=[1,1,1,1,1] relay=V3 (29 bytes)
+1791830887720 COM5 CSV,231668,6,TX,6,8,0,1,255,,,,,,,,,0,29,,,,,heartbeat
+1791830899325 COM5 [HB RX] V1 seq=6 rssi=-37.0 snr=5.5 batt=unknown traffic=0 queue=0
+1791830899331 COM5 CSV,243279,6,RX,1,6,0,1,1,-37.0,5.50,,0,0,0,,,,29,,,,,heartbeat
+1791830909426 COM5 [HB RX] V3 seq=66 rssi=-36.0 snr=7.5 batt=unknown traffic=0 queue=0
+1791830909432 COM5 CSV,253381,6,RX,3,66,0,1,3,-36.0,7.50,,0,0,1,,,,29,,,,,heartbeat
+1791830911440 COM5 [HB RX] V2 seq=114 rssi=-32.0 snr=7.2 batt=unknown traffic=0 queue=0
+1791830911445 COM5 CSV,255394,6,RX,2,114,0,1,2,-32.0,7.25,,0,0,1,,,,29,,,,,heartbeat
+1791830916891 COM5 [HB RX] V4 seq=115 rssi=-40.0 snr=7.2 batt=unknown traffic=0 queue=0
+1791830916897 COM5 CSV,260845,6,RX,4,115,0,1,4,-40.0,7.25,,0,0,0,,,,29,,,,,heartbeat
+1791830918691 COM5 [HB TX] V6 seq=9 batt=unknown traffic=0 queue=0 row=[1,1,1,1,1] relay=V4 (29 bytes)
+1791830918696 COM5 CSV,262645,6,TX,6,9,0,1,255,,,,,,,,,0,29,,,,,heartbeat
+1791830927177 COM5 [HB RX] V1 seq=7 rssi=-37.0 snr=5.2 batt=unknown traffic=0 queue=0
+1791830927183 COM5 CSV,271131,6,RX,1,7,0,1,1,-37.0,5.25,,0,0,0,,,,29,,,,,heartbeat
+1791830931021 COM5 [HB RX] V5 seq=75 rssi=-46.0 snr=6.5 batt=unknown traffic=0 queue=0
+1791830931027 COM5 CSV,274976,6,RX,5,75,0,1,5,-46.0,6.50,,0,0,0,,,,29,,,,,heartbeat
+1791830939854 COM5 [HB RX] V2 seq=115 rssi=-31.0 snr=7.8 batt=unknown traffic=0 queue=0
+1791830939860 COM5 CSV,283808,6,RX,2,115,0,1,2,-31.0,7.75,,0,0,0,,,,29,,,,,heartbeat
+1791830941954 COM5 CSV,285910,6,NEW,6,35886,1,0,,,,,,,,,,,106,,,,,ts=1791830942
+1791830941960 COM5 =======================================================
+1791830941964 COM5 [+] EMERGENCY MESSAGE ACCEPTED & QUEUED
+1791830941969 COM5 =======================================================
+1791830941971 COM5 Ref ID        : V6#35886
+1791830941974 COM5 Priority      : k=1 (MEDICAL SOS (Highest))
+1791830941978 COM5 Location      : logging pipeline msg 1
+1791830941982 COM5 Message Text  : logging pipeline message 1
+1791830941991 COM5 Security      : AES-128-CBC + HMAC-SHA-256/128 frame tag (Encrypted body: 80 bytes, LoRa frame: 106 bytes)
+1791830941997 COM5 Min-Heap State: Inserted at O(log n) (Current Queue Size: 1)
+1791830941999 COM5 Connected Stns: 1 / 25 max
+1791830942005 COM5 =======================================================
+1791830942092 COM5 [LORA CAD] Scan error -702; retaining packet V6#35886.
+1791830948019 COM5 CSV,291974,6,NEW,6,35887,1,0,,,,,,,,,,,106,,,,,ts=1791830949
+1791830948024 COM5 =======================================================
+1791830948027 COM5 [+] EMERGENCY MESSAGE ACCEPTED & QUEUED
+1791830948032 COM5 =======================================================
+1791830948034 COM5 Ref ID        : V6#35887
+1791830948039 COM5 Priority      : k=1 (MEDICAL SOS (Highest))
+1791830948042 COM5 Location      : logging pipeline msg 2
+1791830948047 COM5 Message Text  : logging pipeline message 2
+1791830948056 COM5 Security      : AES-128-CBC + HMAC-SHA-256/128 frame tag (Encrypted body: 80 bytes, LoRa frame: 106 bytes)
+1791830948062 COM5 Min-Heap State: Inserted at O(log n) (Current Queue Size: 2)
+1791830948064 COM5 Connected Stns: 1 / 25 max
+1791830948069 COM5 =======================================================
+1791830948075 COM5 [HB RX] V4 seq=116 rssi=-41.0 snr=7.0 batt=unknown traffic=0 queue=0
+1791830948081 COM5 CSV,292026,6,RX,4,116,0,1,4,-41.0,7.00,,0,0,9,,,,29,,,,,heartbeat
+1791830951088 COM5 [LORA TX] Started packet V6#35886 to V3, 106 bytes, header 0x7C.
+1791830951095 COM5 CSV,295042,6,TX,6,35886,1,0,3,-36.0,7.50,,0,0,41662,,,0,106,2,0,0,0,queue;cost=2
+1791830955363 COM5 [LORA TX] Packet V6#35886 sent (106 bytes); waiting for next-hop ACK.
+1791830956906 COM5 CSV,300860,6,RX,6,35886,0,3,3,-37.0,3.50,,0,0,47480,,,0,24,,,,,to_me
+1791830956910 COM5 [LORA ACK] Next hop V3 acknowledged packet V6#35886.
+1791830956917 COM5 CSV,300861,6,ACK,6,35886,1,0,3,-36.0,7.50,,0,0,47481,,,,,,,,,hop_ms=5819
+1791830957095 COM5 [LORA TX] Started packet V6#35887 to V3, 106 bytes, header 0x7C.
+1791830957101 COM5 CSV,301050,6,TX,6,35887,1,0,3,-36.0,7.50,,0,0,47670,,,0,106,1,0,0,0,queue;cost=2

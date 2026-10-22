@@ -379,6 +379,12 @@
                 </div>
                 <div>
                     <span id="liveStatus" role="status" style="font-size:12px; color:#8b949e; margin-right:12px;">Connecting</span>
+                    <label style="font-size:12px; color:#8b949e; margin-right:6px;">Sort:</label>
+                    <select id="sortOrder" class="filter-select" onchange="renderTable()" style="margin-right:12px;">
+                        <option value="arrival">Arrival order (first &rarr; last)</option>
+                        <option value="newest">Newest first</option>
+                        <option value="priority">Priority (k=1 on top)</option>
+                    </select>
                     <label style="font-size:12px; color:#8b949e; margin-right:6px;">Filter Priority:</label>
                     <select id="priorityFilter" class="filter-select" onchange="renderTable()">
                         <option value="all">All Priorities</option>
@@ -392,6 +398,7 @@
             <table>
                 <thead>
                     <tr>
+                        <th>Arrival #</th>
                         <th>Ref# / ID</th>
                         <th>Priority</th>
                         <th>Type</th>
@@ -459,13 +466,27 @@
             const filter = document.getElementById('priorityFilter').value;
             const tbody = document.getElementById('incidentTableBody');
             tbody.replaceChildren();
+            const sortOrder = document.getElementById('sortOrder').value;
+            // Arrival number from the hub (1 = first received); older firmware: fall back to receive time.
+            const arrivalOf = m => m.arrival != null ? Number(m.arrival) : Number(m.rxTime);
+            // Seconds after the previous message to arrive (computed over ALL messages, before filtering).
+            const byArrival = incidentLogs.slice().sort((a, b) => arrivalOf(a) - arrivalOf(b));
+            const gapSeconds = new Map();
+            byArrival.forEach((m, i) => {
+                if (i > 0) gapSeconds.set(m, (Number(m.rxTime) - Number(byArrival[i - 1].rxTime)) / 1000);
+            });
+            const comparators = {
+                arrival: (a, b) => arrivalOf(a) - arrivalOf(b),
+                newest: (a, b) => arrivalOf(b) - arrivalOf(a),
+                priority: (a, b) => a.priority - b.priority || arrivalOf(a) - arrivalOf(b)
+            };
             const filtered = incidentLogs.filter(m => filter === 'all' || m.priority == filter)
-                .sort((a, b) => a.priority - b.priority || Number(b.rxTime) - Number(a.rxTime));
+                .sort(comparators[sortOrder] || comparators.arrival);
 
             if (filtered.length === 0) {
                 const row = document.createElement('tr');
                 const cell = document.createElement('td');
-                cell.colSpan = 9;
+                cell.colSpan = 10;
                 cell.style.cssText = 'text-align:center; padding:24px; color:#8b949e;';
                 cell.textContent = 'No authenticated LoRa messages have been received.';
                 row.appendChild(cell);
@@ -485,7 +506,9 @@
                 const typeNames = ['SOS', 'HEARTBEAT', 'TELEMETRY', 'ACK'];
                 const receivedSeconds = Number(m.rxTime) / 1000;
                 const latencyMs = m.latencyMs == null ? NaN : Number(m.latencyMs);
+                const gap = gapSeconds.get(m);
                 const cells = [
+                    m.arrival != null ? `${m.arrival}` : '-',
                     `#${m.id}`,
                     null,
                     typeNames[m.packetType] || 'UNKNOWN',
@@ -494,32 +517,35 @@
                     Number.isFinite(latencyMs) && latencyMs >= 0 ? `${(latencyMs / 1000).toFixed(2)} s` : 'N/A',
                     m.crypto || 'Authenticated',
                     null,
-                    Number.isFinite(receivedSeconds) ? `T+${receivedSeconds.toFixed(1)} s` : 'N/A'
+                    Number.isFinite(receivedSeconds)
+                        ? `T+${receivedSeconds.toFixed(1)} s` + (gap != null ? ` (+${gap.toFixed(1)} s)` : '')
+                        : 'N/A'
                 ];
                 cells.forEach((value, index) => {
-                    if (index === 1) {
+                    if (index === 2) {
                         tr.appendChild(priorityCell);
                         return;
                     }
                     const cell = document.createElement('td');
-                    if (index === 0) cell.style.cssText = 'font-weight:700; color:#58a6ff;';
-                    if (index === 3) cell.style.cssText = 'font-weight:600; color:#f0f6fc;';
-                    if (index === 4) {
+                    if (index === 0) cell.style.cssText = 'font-weight:800; color:#f0f6fc; text-align:center;';
+                    if (index === 1) cell.style.cssText = 'font-weight:700; color:#58a6ff;';
+                    if (index === 4) cell.style.cssText = 'font-weight:600; color:#f0f6fc;';
+                    if (index === 5) {
                         const route = document.createElement('span');
                         route.className = 'route-tag';
                         route.textContent = value;
                         cell.appendChild(route);
-                    } else if (index === 5) {
+                    } else if (index === 6) {
                         const latency = document.createElement('span');
                         latency.className = 'latency-tag';
                         latency.textContent = value;
                         cell.appendChild(latency);
-                    } else if (index === 6) {
+                    } else if (index === 7) {
                         const crypto = document.createElement('span');
                         crypto.className = 'crypto-tag';
                         crypto.textContent = value;
                         cell.appendChild(crypto);
-                    } else if (index === 7) {
+                    } else if (index === 8) {
                         const location = document.createElement('div');
                         location.className = 'loc-text';
                         location.textContent = m.location || 'Unspecified';
@@ -542,10 +568,10 @@
                 return;
             }
             const csvCell = value => `"${String(value == null ? '' : value).replace(/"/g, '""')}"`;
-            const rows = [["Message_ID", "Priority", "Packet_Type", "Origin_Node", "Path", "Latency_ms", "Security", "Location", "Message", "Rx_Uptime_ms"]];
+            const rows = [["Arrival_No", "Message_ID", "Priority", "Packet_Type", "Origin_Node", "Path", "Latency_ms", "Security", "Location", "Message", "Rx_Uptime_ms"]];
             incidentLogs.forEach(m => {
                 const packetType = ["SOS", "HEARTBEAT", "TELEMETRY", "ACK"][m.packetType] || "UNKNOWN";
-                rows.push([m.id, m.priority, packetType, m.origin, m.route,
+                rows.push([m.arrival, m.id, m.priority, packetType, m.origin, m.route,
                     m.latencyMs, m.crypto, m.location, m.message, m.rxTime]);
             });
 

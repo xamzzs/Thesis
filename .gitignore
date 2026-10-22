@@ -3,3 +3,7 @@
 .vscode/c_cpp_properties.json
 .vscode/launch.json
 .vscode/ipch
+backup/
+
+# Local encryption, community access, and admin credentials; never commit.
+/include/private_config.h

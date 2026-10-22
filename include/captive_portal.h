@@ -289,8 +289,8 @@ const char CAPTIVE_PORTAL_HTML[] PROGMEM = R"CAPTIVEPORTAL(
             <!-- Community Credential Verification (Anti-Spoofing / Chapter 4.3) -->
             <div class="auth-box">
                 <div class="auth-label">&#128274; Community Passcode / Access Token</div>
-                <input type="text" id="credential" placeholder="Enter barangay passcode (e.g. SANMIGUEL2026)" value="SANMIGUEL2026" autocomplete="off" required>
-                <div class="auth-hint">Reduces network abuse. Default: <b>SANMIGUEL2026</b></div>
+                <input type="text" id="credential" placeholder="Enter barangay passcode" autocomplete="off" required>
+                <div class="auth-hint">Enter the community passcode provided by your barangay.</div>
             </div>
 
             <!-- Section 1: Priority Selection (Dual-Key Min-Heap k=1,2,3) -->
@@ -317,13 +317,13 @@ const char CAPTIVE_PORTAL_HTML[] PROGMEM = R"CAPTIVEPORTAL(
             <div class="section-title">2. Tell us what's happening</div>
             <div class="form-group">
                 <label for="location">Location / Landmark in Brgy. San Miguel</label>
-                <input type="text" id="location" placeholder="Near basketball court, Purok 3, house #42" maxlength="80" autocomplete="off" required>
+                <input type="text" id="location" placeholder="Near basketball court, Purok 3, house #42" maxlength="80" oninput="updateByteCount()" autocomplete="off" required>
             </div>
 
             <div class="form-group">
-                <label for="message">Message (Strict 200 UTF-8 Bytes max)</label>
+                <label for="message">Message (location + message: 200 UTF-8 bytes max)</label>
                 <textarea id="message" placeholder="State the emergency, number of people affected, and immediate assistance needed..." oninput="updateByteCount()" autocomplete="off" required></textarea>
-                <div class="byte-counter" id="byteCounter">0 / 200 bytes</div>
+                <div class="byte-counter" id="byteCounter">0 / 200 bytes (location + message)</div>
             </div>
 
             <!-- Section 3: Status & Connect-Queue-Disconnect -->
@@ -338,7 +338,7 @@ const char CAPTIVE_PORTAL_HTML[] PROGMEM = R"CAPTIVEPORTAL(
         </form>
 
         <div class="capacity-footer">
-            Wi-Fi supports up to 25 connected devices. After submitting, disconnect from EMERGENCY-HUB-03 in your device's Wi-Fi settings to free your connection slot.
+            Wi-Fi supports up to 25 connected devices. After submitting, disconnect from this EMERGENCY-HUB Wi-Fi network in your device's Wi-Fi settings to free your connection slot.
         </div>
     </div>
 
@@ -369,22 +369,25 @@ const char CAPTIVE_PORTAL_HTML[] PROGMEM = R"CAPTIVEPORTAL(
             return unescape(encodeURIComponent(str)).length;
         }
 
+        // Location and message share one 200-byte budget so that the encrypted
+        // LoRa frame always fits the 250-byte MTU (firmware rejects anything larger).
         function updateByteCount() {
+            var locInput = document.getElementById('location');
             var msgInput = document.getElementById('message');
+            var locBytes = getUtf8Bytes(locInput.value.trim());
             var text = msgInput.value;
-            var byteLen = getUtf8Bytes(text);
+            var msgLimit = Math.max(0, MAX_BYTES - locBytes);
 
-            // Hard clamp at 200 UTF-8 bytes to prevent LoRa MTU overflow
-            if (byteLen > MAX_BYTES) {
-                while (getUtf8Bytes(text) > MAX_BYTES && text.length > 0) {
+            if (getUtf8Bytes(text.trim()) > msgLimit) {
+                while (getUtf8Bytes(text.trim()) > msgLimit && text.length > 0) {
                     text = text.slice(0, -1);
                 }
                 msgInput.value = text;
-                byteLen = getUtf8Bytes(text);
             }
 
+            var byteLen = locBytes + getUtf8Bytes(text.trim());
             var counterEl = document.getElementById('byteCounter');
-            counterEl.innerText = byteLen + ' / ' + MAX_BYTES + ' bytes';
+            counterEl.innerText = byteLen + ' / ' + MAX_BYTES + ' bytes (location + message)';
             if (byteLen >= MAX_BYTES) {
                 counterEl.className = 'byte-counter byte-warning';
             } else {
@@ -408,7 +411,6 @@ const char CAPTIVE_PORTAL_HTML[] PROGMEM = R"CAPTIVEPORTAL(
 
         function clearForm() {
             document.getElementById('emergencyForm').reset();
-            document.getElementById('credential').value = "SANMIGUEL2026";
             selectPriority(1);
             updateByteCount();
             document.getElementById('statusBox').style.display = 'none';
@@ -417,7 +419,7 @@ const char CAPTIVE_PORTAL_HTML[] PROGMEM = R"CAPTIVEPORTAL(
 
         function handleDisconnect() {
             var statusBox = document.getElementById('statusBox');
-            statusBox.innerHTML = '<div><b>Your message remains queued at the hub.</b></div><div style="margin-top:4px;">To free your Wi-Fi connection slot, open your device\'s Wi-Fi settings and disconnect from <b>EMERGENCY-HUB-03</b>. This page cannot disconnect the device automatically.</div>';
+            statusBox.innerHTML = '<div><b>Your message remains queued at the hub.</b></div><div style="margin-top:4px;">To free your Wi-Fi connection slot, open your device\'s Wi-Fi settings and disconnect from this <b>EMERGENCY-HUB</b> network. This page cannot disconnect the device automatically.</div>';
             statusBox.className = 'status-box status-success';
             statusBox.style.display = 'block';
             document.getElementById('disconnectBtn').style.display = 'none';
@@ -430,21 +432,19 @@ const char CAPTIVE_PORTAL_HTML[] PROGMEM = R"CAPTIVEPORTAL(
             var loc = document.getElementById('location').value.trim();
             var msg = document.getElementById('message').value.trim();
 
-            if (cred !== "SANMIGUEL2026") {
-                showStatus('&#10007; <b>Invalid Community Passcode:</b> Please use the designated barangay passcode (SANMIGUEL2026).', false);
-                return;
-            }
             if (!loc || !msg) return;
 
             sendBtn.disabled = true;
             sendBtn.innerText = "ENCRYPTING & TRANSMITTING...";
 
+            var nowMs = Date.now();
             var payload = {
                 credential: cred,
                 priority: selectedPriority,
                 location: loc,
                 message: msg,
-                timestamp: Math.floor(Date.now() / 1000)
+                timestamp: Math.floor(nowMs / 1000),
+                timestamp_ms: nowMs % 1000
             };
 
             fetch('/api/submit', {
